@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>本週複習</title>
+<style>
+  @page { size: A4; margin: 0; }
+  :root { --main:#004C5D; --accent:#E8704A; --hl:#FBD3C2; --frame:#84A5B1; --line:#B9D3DA; --pink:#FBEDEE; --ink:#2A2A2A; --sub:#6B7B80; }
+  * { box-sizing:border-box; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  body { margin:0; color:var(--ink); font-family:"Microsoft JhengHei","Yu Gothic",sans-serif; font-size:9.8pt; line-height:1.65; }
+  [lang=ja] { font-family:"Yu Gothic","Meiryo",sans-serif; }
+  rt { font-size:0.5em; color:#6b6b6b; font-weight:normal; }
+  .page { width:210mm; height:297mm; background:var(--frame); padding:9mm 9mm 14mm; page-break-after:always; overflow:hidden; }
+  .page:last-child { page-break-after:auto; }
+  .sheet { position:relative; height:100%; border-radius:4mm; padding:7mm 9mm 16mm;
+    background-color:#fff;
+    background-image:linear-gradient(#EEF3F5 1px, transparent 1px), linear-gradient(90deg, #EEF3F5 1px, transparent 1px);
+    background-size:5mm 5mm; }
+
+  /* 頁首 */
+  .head { display:flex; justify-content:space-between; align-items:flex-end; border-bottom:2px solid var(--main); padding-bottom:2mm; margin-bottom:4mm; }
+  .head .kicker { font-size:8.5pt; color:var(--main); letter-spacing:.5px; }
+  .head h1 { margin:0; font-size:19pt; color:var(--main); line-height:1.3; letter-spacing:1px; }
+  .pill { background:var(--accent); color:#fff; font-weight:bold; font-size:11pt; padding:1mm 4.5mm; border-radius:2mm; }
+  .head.small h1 { font-size:13pt; }
+
+  /* 標題框 */
+  .titlebox { background:var(--main); color:#fff; border-radius:2.5mm; padding:3mm 6mm 3.5mm; }
+  .titlebox .t { font-size:14pt; font-weight:bold; line-height:2.0; white-space:nowrap; }
+  .titlebox rt { color:#cfe3e8; }
+  .titlebox .meta { font-size:8pt; opacity:.85; }
+
+  /* 導言 */
+  .lead { border-left:4px solid var(--line); padding:1mm 0 1mm 5mm; margin:4mm 0 1mm; font-size:10.5pt; line-height:2.25; }
+  mark { background:linear-gradient(transparent 55%, var(--hl) 55%); color:inherit; font-weight:bold; }
+
+  /* 區塊標題 */
+  h2 { display:flex; align-items:center; gap:2.5mm; color:var(--main); font-size:12pt; margin:4mm 0 2.5mm; }
+  h2 .n { display:inline-flex; justify-content:center; align-items:center; width:6mm; height:6mm; border-radius:50%; background:var(--accent); color:#fff; font-size:9pt; }
+  h2 small { font-size:8pt; color:var(--sub); font-weight:normal; }
+
+  /* 三個重點 */
+  .pt { display:flex; gap:4mm; align-items:center; background:#fff; border:1px solid var(--line); border-radius:2mm; padding:2.5mm 5mm; margin-bottom:2.5mm; }
+  .pt .num { font-family:Georgia,"Times New Roman",serif; font-size:17pt; color:var(--accent); min-width:5mm; }
+  .pt b, .impact b.k { color:var(--main); }
+
+  /* 對你的影響 */
+  .impact { background:var(--pink); border-radius:2mm; padding:3mm 5mm 3mm 9mm; margin:0; }
+  .impact li { margin-bottom:1mm; }
+  .impact .lb { color:var(--accent); font-weight:bold; }
+
+  /* 單字卡 */
+  .card { background:#fff; border:1px solid var(--line); border-left:5px solid var(--main); border-radius:2mm; padding:2.5mm 5mm 3mm; margin-bottom:3mm; }
+  .card.gram { border-left-color:var(--accent); }
+  .card .top { display:flex; align-items:baseline; gap:3mm; margin-bottom:1mm; flex-wrap:wrap; }
+  .card .w { font-size:16pt; font-weight:bold; color:var(--main); }
+  .card .yomi { color:var(--sub); font-size:9.5pt; }
+  .card .pos { border:1px solid var(--main); color:var(--main); border-radius:1mm; font-size:8pt; padding:0 2mm; }
+  .card .mean { font-weight:bold; }
+  .r { display:flex; gap:2.5mm; align-items:flex-start; margin:0.8mm 0; }
+  .r .lab { flex:none; font-size:7.5pt; color:#fff; border-radius:1mm; padding:0 1.5mm; margin-top:1.2mm; line-height:1.6; }
+  .lab.c { background:var(--main); } .lab.j { background:#7F9AA3; } .lab.e { background:var(--accent); } .lab.u { background:#5C8A6E; }
+  .r .ja { line-height:2.15; }
+  .zh { color:var(--sub); font-size:8.8pt; }
+  .src { font-size:7.5pt; color:var(--sub); padding-left:12mm; }
+
+  .foot { position:absolute; left:9mm; right:9mm; bottom:5mm; font-size:7pt; color:var(--sub); border-top:1px solid var(--line); padding-top:1.2mm; line-height:1.5; }
+  /* 複習模板專用 */
+  table.vocab { width:100%; border-collapse:separate; border-spacing:0; background:#fff; border:1px solid var(--line); border-radius:2mm; overflow:hidden; font-size:9.3pt; }
+  table.vocab th { background:var(--main); color:#fff; font-weight:bold; text-align:left; padding:1.5mm 3mm; font-size:8.5pt; }
+  table.vocab td { padding:1.2mm 3mm; border-top:1px solid #E3ECEF; vertical-align:middle; }
+  table.vocab tr:nth-child(even) td { background:#F6FAFB; }
+  table.vocab .w { font-size:12pt; font-weight:bold; color:var(--main); line-height:2.1; }
+  table.vocab .from { color:var(--sub); font-size:8pt; }
+  .day { display:inline-block; font-size:7.5pt; color:#fff; border-radius:1mm; padding:0 1.5mm; }
+  .day.eco { background:var(--main); } .day.tech { background:#5C8A6E; }
+  .q { background:#fff; border:1px solid var(--line); border-radius:2mm; padding:2mm 5mm; margin-bottom:2mm; }
+  .q .qn { color:var(--accent); font-weight:bold; margin-right:2mm; }
+  .blank { display:inline-block; min-width:16mm; border-bottom:1.5px solid var(--main); margin:0 1mm; }
+  .opts { color:var(--main); font-size:9.3pt; margin-left:7mm; }
+  .answer { background:var(--pink); border-radius:2mm; padding:2.5mm 5mm; font-size:9pt; }
+  .answer b { color:var(--accent); }
+  .summary { background:#fff; border:1px solid var(--line); border-radius:2mm; padding:2mm 5mm; margin-top:4mm; font-size:9.3pt; }
+</style>
+</head>
+<body>
+
+<!-- ===== 第 1 頁：本週單字與文法 ===== -->
+<section class="page"><div class="sheet">
+  <div class="head">
+    <div><div class="kicker">あき ・ 每日日文新聞</div><h1>本週複習</h1></div>
+    <div class="pill">2026.11.23 – 11.28</div>
+  </div>
+
+  <div class="summary">本週講義：<b>1 份</b>（11/25 經濟）｜單字 <b>3</b> 個｜文法 <b>1</b> 個　<span class="zh">※ 範例只有 1 份講義；實際使用時依本週份數增加列（最多 15 個單字、5 個文法）。</span></div>
+
+  <h2><span class="n">1</span>本週單字 <small>大聲念一遍，遮住中文試著回想意思</small></h2>
+  <table class="vocab">
+    <tr><th style="width:22%">單字</th><th style="width:15%">讀音</th><th style="width:20%">詞性・級數</th><th style="width:20%">中文</th><th>出處</th></tr>
+    <tr><td class="w" lang="ja"><ruby>理由<rt>りゆう</rt></ruby></td><td lang="ja">りゆう</td><td>名詞・N4</td><td>理由、原因</td><td class="from"><span class="day eco">經濟</span> 11/25 番茄醬漲價</td></tr>
+    <tr><td class="w" lang="ja"><ruby>家庭<rt>かてい</rt></ruby></td><td lang="ja">かてい</td><td>名詞・N4</td><td>家庭、家裡</td><td class="from"><span class="day eco">經濟</span> 11/25 番茄醬漲價</td></tr>
+    <tr><td class="w" lang="ja"><ruby>発表<rt>はっぴょう</rt></ruby></td><td lang="ja">はっぴょう</td><td>名詞・する動詞・N4～N3</td><td>發表、公布</td><td class="from"><span class="day eco">經濟</span> 11/25 番茄醬漲價</td></tr>
+  </table>
+
+  <h2><span class="n">2</span>本週文法</h2>
+  <div class="card gram">
+    <div class="top"><span class="w" lang="ja">〜によると</span><span class="pos">N4</span><span class="mean">根據〜（的說法）</span><span class="from" style="color:var(--sub);font-size:8pt"><span class="day eco">經濟</span> 11/25</span></div>
+    <div class="r"><span class="lab j">接續</span><span>名詞 ＋ によると（後面常接「〜そうです」「〜ということです」）</span></div>
+  </div>
+
+  <div class="foot">本週複習｜依本週講義整理，題目句子皆取自講義中的真實例句 ｜ p.1</div>
+</div></section>
+
+<!-- ===== 第 2 頁：小測驗 ===== -->
+<section class="page"><div class="sheet">
+  <div class="head small">
+    <div><div class="kicker">あき ・ 每日日文新聞</div><h1>本週複習（小測驗）</h1></div>
+    <div class="pill">2026.11.23 – 11.28</div>
+  </div>
+
+  <h2><span class="n">3</span>單字填空 <small>從本週單字中選一個填入（實際使用時 5 題）</small></h2>
+  <div class="q"><span class="qn">Q1</span><span class="ja" lang="ja"><span class="blank"></span>は、<ruby>材料<rt>ざいりょう</rt></ruby>が<ruby>高<rt>たか</rt></ruby>くなっているからだと<ruby>言<rt>い</rt></ruby>っていました。</span></div>
+  <div class="q"><span class="qn">Q2</span><span class="ja" lang="ja"><ruby>国<rt>くに</rt></ruby>は、<ruby>毎月<rt>まいつき</rt></ruby>、<span class="blank"></span>で<ruby>使<rt>つか</rt></ruby>う<ruby>物<rt>もの</rt></ruby>やサービスの<ruby>値段<rt>ねだん</rt></ruby>を<ruby>調<rt>しら</rt></ruby>べています。</span></div>
+  <div class="q"><span class="qn">Q3</span><span class="ja" lang="ja"><ruby>愛知県<rt>あいちけん</rt></ruby>は、<ruby>9日<rt>ここのか</rt></ruby>、<ruby>雨<rt>あめ</rt></ruby>の<ruby>被害<rt>ひがい</rt></ruby>を<span class="blank"></span>しました。</span></div>
+
+  <h2><span class="n">4</span>文法選擇 <small>選出正確的答案（實際使用時 3 題）</small></h2>
+  <div class="q"><span class="qn">Q4</span><span class="ja" lang="ja">この<ruby>人<rt>ひと</rt></ruby><span class="blank"></span>、<ruby>熊<rt>くま</rt></ruby>は<ruby>親<rt>おや</rt></ruby>と<ruby>子<rt>こ</rt></ruby>どもの2<ruby>頭<rt>とう</rt></ruby>でした。</span>
+    <div class="opts" lang="ja">Ⓐ によると　　Ⓑ にとって　　Ⓒ について</div></div>
+
+  <h2><span class="n">5</span>解答</h2>
+  <div class="answer">
+    <b>Q1</b> <span lang="ja">理由（りゆう）</span>　<b>Q2</b> <span lang="ja">家庭（かてい）</span>　<b>Q3</b> <span lang="ja">発表（はっぴょう）</span>　<b>Q4</b> Ⓐ <span lang="ja">によると</span>（「この人」是消息來源）
+    <div class="zh" style="margin-top:1mm">題目出處：Q1 NHK NEWS WEB EASY 2026-10-07 ／ Q2 2026-08-21 ／ Q3 2026-09-09 ／ Q4 2026-11-17（皆為本週講義中的例句）</div>
+  </div>
+
+  <div class="foot">本週複習｜p.2</div>
+</div></section>
+
+</body>
+</html>
