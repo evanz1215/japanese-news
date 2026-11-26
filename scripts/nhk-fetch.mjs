@@ -21,8 +21,8 @@ if (proxy) launchOpts.proxy = { server: proxy };
 launchOpts.executablePath = process.env.CHROMIUM_PATH || findPreinstalled();
 const browser = await chromium.launch(launchOpts);
 const page = await browser.newPage({ userAgent: UA, locale: 'ja-JP', viewport: { width: 1280, height: 1000 }, ignoreHTTPSErrors: !!proxy });
-// 不載入圖片、影片、字型：讀文字用不到，也避開圖片伺服器被擋或拖慢載入
-await page.route('**/*', r => ['image', 'media', 'font'].includes(r.request().resourceType()) ? r.abort() : r.continue());
+// 不載入圖片、影片、字型、CSS：讀文字用不到；雲端 proxy 下 CSS 會卡住，讓頁面永遠載不完
+await page.route('**/*', r => ['image', 'media', 'font', 'stylesheet'].includes(r.request().resourceType()) ? r.abort() : r.continue());
 
 function findPreinstalled() {
   try {
@@ -31,13 +31,16 @@ function findPreinstalled() {
   const root = '/opt/pw-browsers';
   if (!existsSync(root)) return undefined;
   for (const d of readdirSync(root).filter(d => d.startsWith('chromium-')).sort().reverse()) {
-    const p = `${root}/${d}/chrome-linux/chrome`;
-    if (existsSync(p)) return p;
+    for (const sub of ['chrome-linux64', 'chrome-linux']) {
+      const p = `${root}/${d}/${sub}/chrome`;
+      if (existsSync(p)) return p;
+    }
   }
   return undefined;
 }
 
-await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
+await page.goto(url, { waitUntil: 'commit', timeout: 60000 });
+await page.locator('main').first().waitFor({ state: 'attached', timeout: 60000 });
 const modal = page.locator('#erpc-half-modal');
 if (await modal.waitFor({ timeout: 15000 }).then(() => true, () => false)) {
   // 視窗先畫國內版，GeoIP 回來後才換成海外版，所以等它換掉
