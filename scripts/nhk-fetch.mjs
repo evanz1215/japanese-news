@@ -41,18 +41,34 @@ function findPreinstalled() {
 
 await page.goto(url, { waitUntil: 'commit', timeout: 60000 });
 await page.locator('main').first().waitFor({ state: 'attached', timeout: 60000 });
-const modal = page.locator('#erpc-half-modal');
-if (await modal.waitFor({ timeout: 15000 }).then(() => true, () => false)) {
-  // 視窗先畫國內版，GeoIP 回來後才換成海外版，所以等它換掉
-  const overseas = await modal.getByText('海外からのアクセス').waitFor({ timeout: 20000 }).then(() => true, () => false);
-  if (!overseas) {
-    console.error('UNEXPECTED_CONSENT_DIALOG\n' + await modal.innerText());
-    await browser.close();
-    process.exit(3);
-  }
-  await modal.getByRole('button', { name: /確認して進む/ }).click();
-  await modal.waitFor({ state: 'hidden', timeout: 15000 });
+// 同意視窗的 id 因頁面而異（新聞頁／やさしいことば頁），所以用按鈕文字找。
+// 視窗先畫國內版，GeoIP 回來後才換成海外版，所以最多等 20 秒看海外版按鈕出現。
+const overseasBtn = page.getByRole('button', { name: /確認して進む/ });
+const domestic = page.getByText('内容について確認しました');
+let sawDomestic = false;
+for (let i = 0; i < 20; i++) {
+  if (await overseasBtn.count()) break;
+  if (await domestic.count()) sawDomestic = true;
+  await page.waitForTimeout(1000);
+}
+if (await overseasBtn.count()) {
+  await overseasBtn.first().click();
+  await overseasBtn.first().waitFor({ state: 'detached', timeout: 15000 }).catch(() => {});
+} else if (sawDomestic) {
+  console.error('UNEXPECTED_CONSENT_DIALOG\n' + await page.locator('dialog[open]').allInnerTexts().then(t => t.join('\n')));
+  await browser.close();
+  process.exit(3);
 }
 await page.waitForTimeout(2000);
-console.log(await page.locator('main').innerText());
+if (mode === 'list') {
+  // 列表模式同時印出標題與網址，方便挑新聞
+  const links = await page.locator('main a[href*="/newsweb/na/"]').evaluateAll(as =>
+    // 影片新聞第一行是「1分24秒」這類長度，取最長的一行當標題
+    [...new Map(as.map(a => [a.href, a.innerText.split('\n').map(s => s.trim()).sort((x, y) => y.length - x.length)[0]])).entries()]);
+  console.log(links.map(([href, title]) => `${title}\t${href}`).join('\n'));
+} else {
+  // やさしいことば頁的漢字帶 <rt> 讀音，拿掉才能逐字比對原句
+  await page.evaluate(() => document.querySelectorAll('main rt').forEach(e => e.remove()));
+  console.log(await page.locator('main').innerText());
+}
 await browser.close();
